@@ -3,7 +3,7 @@ Visualization with ggplot
 Congyu Yang
 2024-09-26
 
-Import the data
+## Import the data
 
 ``` r
 weather_df = 
@@ -41,7 +41,7 @@ weather_df =
 
     ## file min/max dates: 1999-09-01 / 2024-09-30
 
-Making our first plot
+### Making our first plot
 
 ``` r
 ggplot(weather_df,aes(x = tmin, y = tmax)) +
@@ -59,3 +59,172 @@ ggp_weather_scatterplot =
   ggplot(aes(x = tmin, y = tmax)) +
   geom_point() # same plot but save it inside the name
 ```
+
+``` r
+weather_df %>% 
+  filter(is.na(tmax))
+```
+
+    ## # A tibble: 17 × 6
+    ##    name         id          date        prcp  tmax  tmin
+    ##    <chr>        <chr>       <date>     <dbl> <dbl> <dbl>
+    ##  1 Molokai_HI   USW00022534 2022-05-31    NA    NA    NA
+    ##  2 Waterhole_WA USS0023B17S 2021-03-09    NA    NA    NA
+    ##  3 Waterhole_WA USS0023B17S 2021-12-07    51    NA    NA
+    ##  4 Waterhole_WA USS0023B17S 2021-12-31     0    NA    NA
+    ##  5 Waterhole_WA USS0023B17S 2022-02-03     0    NA    NA
+    ##  6 Waterhole_WA USS0023B17S 2022-08-09    NA    NA    NA
+    ##  7 Waterhole_WA USS0023B17S 2022-08-10    NA    NA    NA
+    ##  8 Waterhole_WA USS0023B17S 2022-08-11    NA    NA    NA
+    ##  9 Waterhole_WA USS0023B17S 2022-08-12    NA    NA    NA
+    ## 10 Waterhole_WA USS0023B17S 2022-08-13    NA    NA    NA
+    ## 11 Waterhole_WA USS0023B17S 2022-08-14    NA    NA    NA
+    ## 12 Waterhole_WA USS0023B17S 2022-08-15    NA    NA    NA
+    ## 13 Waterhole_WA USS0023B17S 2022-08-16    NA    NA    NA
+    ## 14 Waterhole_WA USS0023B17S 2022-08-17    NA    NA    NA
+    ## 15 Waterhole_WA USS0023B17S 2022-08-18    NA    NA    NA
+    ## 16 Waterhole_WA USS0023B17S 2022-08-19    NA    NA    NA
+    ## 17 Waterhole_WA USS0023B17S 2022-12-31    76    NA    NA
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax,color = name)) +
+  geom_point(alpha = 0.3, size = 0.8)+
+  geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
+# alpha changes the transparency of the points and size changes the size of the points
+# geom_smooth draws the line that fits the points best
+```
+
+For here, we can see there is a line for each of the name category, this
+is because we have `color = name` in the first line of ggplot
+
+## Where you define aesthetics can matter
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name),alpha = 0.3, size = 0.8)+
+  geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-5-1.png)<!-- --> Now
+these is only 1 regression line for the whole x and y, this is because
+we have aes color setting in the second line, for all x and y(stated in
+the first line).
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax,color = name)) +
+  geom_point(alpha = 0.3, size = 0.8)+
+  geom_smooth(se = FALSE)+
+  facet_grid(name ~ .)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax,color = name)) +
+  geom_point(alpha = 0.3, size = 0.8)+
+  geom_smooth(se = FALSE)+
+  facet_grid(. ~ name)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+    ## Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+`facet_grid(row_control ~ column_control)`:one picture for each of the
+category in the variable you stated. Put it in row or col control
+position on your preference.
+
+## Let’s make a somewhat more interesting scatterplot
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = date, y = tmax,color = name,size = prcp)) +
+  geom_point(alpha = 0.3)+
+  geom_smooth(se = FALSE)+
+  facet_grid(. ~ name)
+```
+
+    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `linewidth` instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: The following aesthetics were dropped during statistical transformation: size.
+    ## ℹ This can happen when ggplot fails to infer the correct grouping structure in
+    ##   the data.
+    ## ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+    ##   variable into a factor?
+    ## The following aesthetics were dropped during statistical transformation: size.
+    ## ℹ This can happen when ggplot fails to infer the correct grouping structure in
+    ##   the data.
+    ## ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+    ##   variable into a factor?
+    ## The following aesthetics were dropped during statistical transformation: size.
+    ## ℹ This can happen when ggplot fails to infer the correct grouping structure in
+    ##   the data.
+    ## ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+    ##   variable into a factor?
+
+    ## Warning: Removed 19 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-7-1.png)<!-- --> \###
+Learning Assessment
+
+``` r
+weather_df %>% filter(name == "CentralPark_NY") %>% 
+  mutate(
+    tmax_fahr = tmax*(9/5) + 32,
+    tmin_fahr = tmin*(9/5) + 32
+    ) %>% 
+  ggplot(aes(x = tmin_fahr,y = tmax_fahr))+
+  geom_point()+
+  geom_smooth(method = "lm",se = FALSE)
+```
+
+    ## `geom_smooth()` using formula = 'y ~ x'
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->

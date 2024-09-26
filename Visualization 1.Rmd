@@ -11,7 +11,7 @@ library(tidyverse)
 library(ggridges)
 ```
 
-Import the data
+## Import the data
 
 ```{r}
 weather_df = 
@@ -31,7 +31,7 @@ weather_df =
   select(name, id, everything())
 ```
 
-Making our first plot
+### Making our first plot
 
 ```{r}
 ggplot(weather_df,aes(x = tmin, y = tmax)) +
@@ -45,8 +45,67 @@ ggp_weather_scatterplot =
 
 
 ```{r}
+weather_df %>% 
+  filter(is.na(tmax))
+```
 
-  
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax,color = name)) +
+  geom_point(alpha = 0.3, size = 0.8)+
+  geom_smooth(se = FALSE)
+# alpha changes the transparency of the points and size changes the size of the points
+# geom_smooth draws the line that fits the points best
+```
+For here, we can see there is a line for each of the name category, this is because we have `color = name` in the first line of ggplot
+
+
+## Where you define aesthetics can matter
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name),alpha = 0.3, size = 0.8)+
+  geom_smooth(se = FALSE)
+```
+Now these is only 1 regression line for the whole x and y, this is because we have aes color setting in the second line, for all x and y(stated in the first line).
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax,color = name)) +
+  geom_point(alpha = 0.3, size = 0.8)+
+  geom_smooth(se = FALSE)+
+  facet_grid(name ~ .)
+
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax,color = name)) +
+  geom_point(alpha = 0.3, size = 0.8)+
+  geom_smooth(se = FALSE)+
+  facet_grid(. ~ name)
+```
+`facet_grid(row_control ~ column_control)`:one picture for each of the category in the variable you stated. Put it in row or col control position on your preference.
+
+## Let's make a somewhat more interesting scatterplot
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = date, y = tmax,color = name,size = prcp)) +
+  geom_point(alpha = 0.3)+
+  geom_smooth(se = FALSE)+
+  facet_grid(. ~ name)
+```
+### Learning Assessment
+
+```{r}
+weather_df %>% filter(name == "CentralPark_NY") %>% 
+  mutate(
+    tmax_fahr = tmax*(9/5) + 32,
+    tmin_fahr = tmin*(9/5) + 32
+    ) %>% 
+  ggplot(aes(x = tmin_fahr,y = tmax_fahr))+
+  geom_point()+
+  geom_smooth(method = "lm",se = FALSE)
 ```
 
 
