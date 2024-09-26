@@ -108,4 +108,27 @@ weather_df %>% filter(name == "CentralPark_NY") %>%
   geom_smooth(method = "lm",se = FALSE)
 ```
 
+## Small things
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name),alpha = 0.3,size = 0.8)+
+  geom_smooth(se = FALSE)
+```
+```{r}
+
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex()
+# as the number of data inside your dataset goes large, the ggplot no longer works well, instead, we can use geom_hex
+```
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin,y = tmax)) +
+  geom_point()
+```
+if you want to change the color of the points, do it inside `geom_point()` rather than in `ggplot()`
+
+
 

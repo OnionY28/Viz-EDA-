@@ -228,3 +228,50 @@ weather_df %>% filter(name == "CentralPark_NY") %>%
     ## `geom_smooth()` using formula = 'y ~ x'
 
 ![](Visualization-1_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+## Small things
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name),alpha = 0.3,size = 0.8)+
+  geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex()
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_binhex()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+``` r
+# as the number of data inside your dataset goes large, the ggplot no longer works well, instead, we can use geom_hex
+```
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin,y = tmax)) +
+  geom_point()
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-11-1.png)<!-- --> if
+you want to change the color of the points, do it inside `geom_point()`
+rather than in `ggplot()`
