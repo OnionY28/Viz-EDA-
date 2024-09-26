@@ -1,0 +1,11 @@
+---
+title: "Visualization with ggplot"
+author: "Congyu Yang"
+date: "2024-09-26"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
