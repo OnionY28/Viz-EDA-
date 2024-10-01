@@ -370,7 +370,10 @@ weather_df %>%
 
 ![](Visualization-1_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
-### Violin Plots
+## Violin Plots
+
+more obvious to see if there is anything weird under some category,
+blend of boxplot and density plot
 
 ``` r
 weather_df %>% 
@@ -382,3 +385,77 @@ weather_df %>%
     ## (`stat_ydensity()`).
 
 ![](Visualization-1_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+\### Ridge plot
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin,y = name))+
+  geom_density_ridges()
+```
+
+    ## Picking joint bandwidth of 1.41
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_density_ridges()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+### learning assessment
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = prcp,fill = name)) +
+  geom_histogram()+
+  facet_grid(. ~ name)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 15 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = prcp,fill = name)) +
+  geom_density()+
+  facet_grid(. ~ name)
+```
+
+    ## Warning: Removed 15 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+``` r
+weather_df %>% 
+  filter(prcp > 10,prcp < 1000) %>% 
+  ggplot(aes(x = prcp,fill = name)) +
+  geom_density(alpha = 0.3)
+```
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+## Saving and embedding plots
+
+``` r
+ggp_weather = weather_df %>% 
+  ggplot(aes(x = date,y = tmax,color = name)) +
+  geom_point()
+
+ggsave("plots/ggp_weather.pdf",ggp_weather,width = 8, height = 6)
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+## embedding plots
+
+# figure width is 6 and its height is 60% of its width ( not sure, check with chatgpt)
+
+``` r
+ggp_weather = weather_df %>% 
+  ggplot(aes(x = date,y = tmax,color = name)) +
+  geom_point()
+```

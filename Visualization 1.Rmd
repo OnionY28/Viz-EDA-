@@ -174,13 +174,67 @@ weather_df %>%
   geom_boxplot()
 ```
 
-### Violin Plots
+## Violin Plots
 
+more obvious to see if there is anything weird under some category, blend of boxplot and density plot
 ```{r}
 weather_df %>% 
   ggplot(aes(x = name,y = tmin,fill = name))+
   geom_violin()
 ```
+### Ridge plot
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin,y = name))+
+  geom_density_ridges()
+```
+
+### learning assessment
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = prcp,fill = name)) +
+  geom_histogram()+
+  facet_grid(. ~ name)
+```
+
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = prcp,fill = name)) +
+  geom_density()+
+  facet_grid(. ~ name)
+```
+
+```{r}
+weather_df %>% 
+  filter(prcp > 10,prcp < 1000) %>% 
+  ggplot(aes(x = prcp,fill = name)) +
+  geom_density(alpha = 0.3)
+```
+
+## Saving and embedding plots
+
+```{r}
+ggp_weather = weather_df %>% 
+  ggplot(aes(x = date,y = tmax,color = name)) +
+  geom_point()
+
+ggsave("plots/ggp_weather.pdf",ggp_weather,width = 8, height = 6)
+```
+
+## embedding plots
+
+# figure width is 6 and its height is 60% of its width ( not sure, check with chatgpt)
+
+```{r fig.width = 6,fig.asp= 0.6}
+ggp_weather = weather_df %>% 
+  ggplot(aes(x = date,y = tmax,color = name)) +
+  geom_point()
+```
+
+
 
 
 
