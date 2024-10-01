@@ -7,5 +7,173 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(patchwork)
 ```
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USW00022534", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2021-01-01",
+    date_max = "2022-12-31") |>
+  mutate(
+    name = case_match(
+      id, 
+      "USW00094728" ~ "CentralPark_NY", 
+      "USW00022534" ~ "Molokai_HI",
+      "USS0023B17S" ~ "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) |>
+  select(name, id, everything())
+```
+Made a scatterplot but fancy this time.
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin,y = tmax, color = name))+
+  geom_point(alpha = 0.3) +
+  labs(
+    title = "Temperature scatterplot",
+    x = "Minimum Temp(C)",
+    y = "Maximum Temp(C)",
+    color = "Location",
+    caption = "Weather data taken from rnoaa package for three stations"
+  ) +
+  scale_x_continuous(breaks = c(-15,0,20),
+                     labels = c("-15C","0","20"))+
+  scale_y_continuous(
+    limits = c(0,30),
+    transform = "sqrt"
+  )
+```
+
+Look at color
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin,y = tmax, color = name))+
+  geom_point(alpha = 0.3) +
+  labs(
+    title = "Temperature scatterplot",
+    x = "Minimum Temp(C)",
+    y = "Maximum Temp(C)",
+    color = "Location",
+    caption = "Weather data taken from rnoaa package for three stations"
+  ) +
+  scale_color_hue(h = c(100,400)) +
+  viridis::scale_color_viridis(discrete = T)
+```
+## Themes
+
+```{r}
+gg_scatterplot <- weather_df %>% 
+  ggplot(aes(x = tmin,y = tmax, color = name))+
+  geom_point(alpha = 0.3) +
+  labs(
+    title = "Temperature scatterplot",
+    x = "Minimum Temp(C)",
+    y = "Maximum Temp(C)",
+    color = "Location",
+    caption = "Weather data taken from rnoaa package for three stations"
+  ) +
+  viridis::scale_color_viridis(discrete = T)
+```
+
+```{r}
+gg_scatterplot +
+  theme(legend.position = "bottom")
+```
+
+Change background color
+change it ahead of time, it is like resetting everything, if you do legend position first and then reset theme_bw, legend position will no longer works.
+
+```{r}
+gg_scatterplot +
+  theme_bw()+
+  theme(legend.position = "bottom")
+```
+order matters...
+
+```{r}
+gg_scatterplot +
+  theme(legend.position = "bottom")+
+  theme_minimal()
+```
+
+```{r}
+gg_scatterplot +
+  theme(legend.position = "bottom")+
+  theme_classic()
+```
+```{r}
+gg_scatterplot +
+  theme(legend.position = "bottom")+
+  ggthemes::theme_excel()
+```
+New Scatterplot
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = date,y = tmax,color = name,size = prcp)) +
+  geom_point(alpha = 0.3)+
+  geom_smooth(se = F)+
+  viridis::scale_color_viridis(discrete = T)+
+  labs(
+    x = "Date",
+    y = "Maximum Temp (C)",
+    title = "Seasonal variation ..."
+  )
+# not yet finished
+```
+Extra Bonus stuff in `ggplot`
+Use different datasets in different `geom`s
+```{r}
+central_park_df =
+  weather_df %>% 
+  filter(name == "CentralPark_NY")
+
+molokai_df =
+  weather_df %>% 
+  filter(name == "Molokai_HI")
+
+molokai_df %>% 
+  ggplot(aes(x = date, y = tmax,color = name))+
+  geom_point()+
+  geom_line(data = central_park_df)
+```
+## Multiple Panels
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmax, fill = name))+
+  geom_density()+
+  facet_grid(. ~ name)
+```
+
+```{r}
+ggp_tmax_tmin =
+  weather_df %>% 
+  ggplot(aes(x = tmin,y = tmax,color = name))+
+  geom_point(alpha = 0.3)
+
+ggp_tmax_density =
+  weather_df %>% 
+  ggplot(aes(x = tmax, fill = name))+
+  geom_density()
+
+ggp_tmax_date =
+  weather_df %>% 
+  ggplot(aes(x = date,y = tmax, color = name))+
+  geom_point()+
+  geom_smooth(se = F)
+
+(ggp_tmax_tmin + ggp_tmax_density)/ggp_tmax_date
+```
+## Data Manipulation
+
+
+
+
 
