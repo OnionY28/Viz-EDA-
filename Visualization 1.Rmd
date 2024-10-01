@@ -30,6 +30,7 @@ weather_df =
     tmax = tmax / 10) |>
   select(name, id, everything())
 ```
+## Bivariate plots
 
 ### Making our first plot
 
@@ -61,7 +62,7 @@ weather_df %>%
 For here, we can see there is a line for each of the name category, this is because we have `color = name` in the first line of ggplot
 
 
-## Where you define aesthetics can matter
+### Where you define aesthetics can matter
 
 ```{r}
 weather_df %>% 
@@ -86,7 +87,7 @@ weather_df %>%
 ```
 `facet_grid(row_control ~ column_control)`:one picture for each of the category in the variable you stated. Put it in row or col control position on your preference.
 
-## Let's make a somewhat more interesting scatterplot
+### Let's make a somewhat more interesting scatterplot
 
 ```{r}
 weather_df %>% 
@@ -108,7 +109,7 @@ weather_df %>% filter(name == "CentralPark_NY") %>%
   geom_smooth(method = "lm",se = FALSE)
 ```
 
-## Small things
+### Small things
 
 ```{r}
 weather_df %>% 
@@ -129,6 +130,59 @@ weather_df %>%
   geom_point()
 ```
 if you want to change the color of the points, do it inside `geom_point()` rather than in `ggplot()`
+
+## Univariate plots
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin))+
+  geom_histogram()
+```
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin,fill = name))+
+  geom_histogram()
+# one bar for each of the name category
+```
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin,fill = name))+
+  geom_histogram(position = "dodge")
+# instead of all bars together for each of the categories, we change the postion to "dodge", each bar next to each other 
+```
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin,fill = name))+
+  geom_histogram()+
+  facet_grid(. ~ name)
+
+# looks much better, one histogram for each of the category
+```
+### density plot
+```{r}
+ weather_df %>% 
+  ggplot(aes(x = tmin,fill = name))+
+  geom_density(alpha = 0.3)
+```
+### boxplot
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = name,y = tmin,fill = name))+
+  geom_boxplot()
+```
+
+### Violin Plots
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = name,y = tmin,fill = name))+
+  geom_violin()
+```
+
+
 
 
 

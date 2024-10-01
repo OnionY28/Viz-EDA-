@@ -41,6 +41,8 @@ weather_df =
 
     ## file min/max dates: 1999-09-01 / 2024-09-30
 
+## Bivariate plots
+
 ### Making our first plot
 
 ``` r
@@ -111,7 +113,7 @@ weather_df %>%
 For here, we can see there is a line for each of the name category, this
 is because we have `color = name` in the first line of ggplot
 
-## Where you define aesthetics can matter
+### Where you define aesthetics can matter
 
 ``` r
 weather_df %>% 
@@ -171,7 +173,7 @@ weather_df %>%
 category in the variable you stated. Put it in row or col control
 position on your preference.
 
-## Let’s make a somewhat more interesting scatterplot
+### Let’s make a somewhat more interesting scatterplot
 
 ``` r
 weather_df %>% 
@@ -229,7 +231,7 @@ weather_df %>% filter(name == "CentralPark_NY") %>%
 
 ![](Visualization-1_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-## Small things
+### Small things
 
 ``` r
 weather_df %>% 
@@ -275,3 +277,108 @@ weather_df %>%
 ![](Visualization-1_files/figure-gfm/unnamed-chunk-11-1.png)<!-- --> if
 you want to change the color of the points, do it inside `geom_point()`
 rather than in `ggplot()`
+
+## Univariate plots
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin))+
+  geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin,fill = name))+
+  geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+``` r
+# one bar for each of the name category
+```
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin,fill = name))+
+  geom_histogram(position = "dodge")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+``` r
+# instead of all bars together for each of the categories, we change the postion to "dodge", each bar next to each other 
+```
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin,fill = name))+
+  geom_histogram()+
+  facet_grid(. ~ name)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+``` r
+# looks much better, one histogram for each of the category
+```
+
+### density plot
+
+``` r
+ weather_df %>% 
+  ggplot(aes(x = tmin,fill = name))+
+  geom_density(alpha = 0.3)
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+\### boxplot
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = name,y = tmin,fill = name))+
+  geom_boxplot()
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+### Violin Plots
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = name,y = tmin,fill = name))+
+  geom_violin()
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_ydensity()`).
+
+![](Visualization-1_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
